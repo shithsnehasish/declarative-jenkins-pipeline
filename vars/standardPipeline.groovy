@@ -10,11 +10,9 @@ def call(body) {
             deleteDir()
 
             try {
-                stage ('Clone') {
-                    checkout scm
-                }
+           
                 stage ('Build') {
-                    sh "echo 'building ${config.projectName} ...'"
+                    sh "echo 'building ${config.projectName} ...'; mvn clean"
                 }
                 stage ('Tests') {
                     parallel 'static': {
@@ -28,7 +26,7 @@ def call(body) {
                     }
                 }
                 stage ('Deploy') {
-                    sh "echo 'deploying to server ${config.serverDomain}...'"
+                    sh "echo 'deploying to server ${config.serverDomain}...'; mvn install"
                 }
             } catch (err) {
                 currentBuild.result = 'FAILED'
